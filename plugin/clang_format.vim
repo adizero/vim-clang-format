@@ -8,14 +8,17 @@ command! -range=% -nargs=0 ClangFormatEchoFormattedCode echo clang_format#format
 
 if !exists("g:clang_format#autocommands_loaded")
     augroup plugin-clang-format-auto-format
-        autocmd BufWritePre * if &ft =~# '^\%(c\|cpp\|objc\)$' && g:clang_format#auto_format && !clang_format#is_invalid() | call clang_format#replace(1, line('$')) | endif
-        autocmd FileType c,cpp,objc if g:clang_format#auto_format_on_insert_leave && !clang_format#is_invalid() | call clang_format#enable_format_on_insert() | endif
-        autocmd FileType c,cpp,objc if g:clang_format#auto_formatexpr && !clang_format#is_invalid() | setlocal formatexpr=clang_format#replace(v:lnum,v:lnum+v:count-1) | endif
+        autocmd!
+        autocmd BufWritePre * if &ft =~# '^\%(c\|cpp\|objc\|java\|javascript\|typescript\)$' && g:clang_format#auto_format && !clang_format#is_invalid() | call clang_format#replace(1, line('$')) | endif
+        autocmd FileType c,cpp,objc,java,javascript,typescript if g:clang_format#auto_format_on_insert_leave && !clang_format#is_invalid() | call clang_format#enable_format_on_insert() | endif
+        autocmd FileType c,cpp,objc,java,javascript,typescript if g:clang_format#auto_formatexpr && !clang_format#is_invalid() | setlocal formatexpr=clang_format#replace(v:lnum,v:lnum+v:count-1) | endif
     augroup END
     let g:clang_format#autocommands_loaded = 1
 endif
 
 command! ClangFormatAutoToggle call clang_format#toggle_auto_format()
+command! ClangFormatAutoEnable call clang_format#enable_auto_format()
+command! ClangFormatAutoDisable call clang_format#disable_auto_format()
 
 let g:loaded_clang_format = 1
 
